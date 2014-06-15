@@ -34,7 +34,7 @@
       this._transformMode = 'push';
       this._transformPadding = value;
 
-      return this._execute();
+      return this._compareMode === '=' ? this : this._execute();
     },
 
     /**
@@ -138,12 +138,26 @@
     },
 
     /**
+     * Specifies that the target should have exactly this
+     * many of the next filtered option.
+     *
+     * @param    integer    quantity    The quantity to check.
+     */
+    hasNoLessThan: function(quantity)
+    {
+      this._quantity = quantity;
+      this._compareMode = '=';
+
+      return this;
+    },
+
+    /**
      * Specifies that the target should have at least this
      * many of the next filtered option.
      *
      * @param    integer    quantity    The quantity to check.
      */
-    hasAtLeast: function(quantity)
+    hasNoLessThan: function(quantity)
     {
       this._quantity = quantity;
       this._compareMode = '>=';
@@ -300,7 +314,7 @@ console.log('arr2 should contain values A,B \n', arr2.join() === 'A,B');
 var arr3 = [ 'A', 'B', 'C', 'D' ];
 
 ensure.that(arr3)
-      .hasAtLeast(6)
+      .hasNoLessThan(6)
       .elements()
       .byUnshifting();
 
@@ -311,7 +325,7 @@ console.log('arr3 should contain values ,,A,B,C,D \n', arr3.join() === ',,A,B,C,
 var arr4 = [ 'A', 'B', 'C', 'D' ];
 
 ensure.that(arr4)
-      .hasAtLeast(6)
+      .hasNoLessThan(6)
       .elements()
       .byUnshifting(' ');
 
@@ -322,7 +336,7 @@ console.log('arr4 should contain values  , ,A,B,C,D \n', arr4.join() === ' , ,A,
 var arr5 = [ 'A', 'B', 'C', 'D' ];
 
 ensure.that(arr5)
-      .hasAtLeast(6)
+      .hasNoLessThan(6)
       .elements()
       .byPushing();
 
@@ -333,10 +347,22 @@ console.log('arr5 should contain values  A,B,C,D,, \n', arr5.join() === 'A,B,C,D
 var arr6 = [ 'A', 'B', 'C', 'D' ];
 
 ensure.that(arr6)
-      .hasAtLeast(6)
+      .hasNoLessThan(6)
       .elements()
       .byPushing(' ');
 
 console.log('TESTING PUSHING WITH AN ARGUMENT');
 console.log('arr6.length should be 6 \n', arr6.length === 6);
 console.log('arr6 should contain values  A,B,C,D, ,  \n', arr6.join() === 'A,B,C,D, , ');
+
+var arr7 = [ 'A', 'B', 'C', 'D' ];
+
+ensure.that(arr7)
+      .hasExactly(6)
+      .elements()
+      .byPushing(' ')
+      .orPopping();
+
+console.log('TESTING ARRAY EXACT SIZE BY PUSHING WITH AN ARGUMENT OR POPPING');
+console.log('arr7.length should be 6 \n', arr7.length === 6);
+console.log('arr7 should contain values  A,B,C,D, ,  \n', arr7.join() === 'A,B,C,D, , ');

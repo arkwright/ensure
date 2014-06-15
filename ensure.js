@@ -21,6 +21,24 @@
 
     /**
      * Specifies that the transform mode of the ensure chain
+     * should be to push an array, and executes the statement.
+     *
+     * Pushed array elements receive a default value of undefined
+     * if no value is provided.
+     *
+     * @param    mixed    value     The value to insert into pushed array elements.
+     *                              Defaults to undefined.
+     */
+    byPushing: function(value)
+    {
+      this._transformMode = 'push';
+      this._transformPadding = value;
+
+      return this._execute();
+    },
+
+    /**
+     * Specifies that the transform mode of the ensure chain
      * should be to shift an array, and executes the statement.
      */
     byShifting: function()
@@ -162,6 +180,20 @@
     },
 
     /**
+     * Pushes the specified number of elements onto of the
+     * end of the target array.
+     *
+     * @param    integer    numElements    The number of elements to add. 
+     */
+    _push: function(numElements)
+    {
+      for (var i = 0; i < numElements; i++)
+      {
+        this._target.push(this._transformPadding);
+      }
+    },
+
+    /**
      * Shifts the specified number of elements off of the
      * beginning of the target array.
      *
@@ -286,4 +318,25 @@ ensure.that(arr4)
 console.log('TESTING UNSHIFTING WITH AN ARGUMENT');
 console.log('arr4.length should be 6 \n', arr4.length === 6);
 console.log('arr4 should contain values  , ,A,B,C,D \n', arr4.join() === ' , ,A,B,C,D');
-console.log(arr4);
+
+var arr5 = [ 'A', 'B', 'C', 'D' ];
+
+ensure.that(arr5)
+      .hasAtLeast(6)
+      .elements()
+      .byPushing();
+
+console.log('TESTING PUSHING');
+console.log('arr5.length should be 6 \n', arr5.length === 6);
+console.log('arr5 should contain values  A,B,C,D,, \n', arr5.join() === 'A,B,C,D,,');
+
+var arr6 = [ 'A', 'B', 'C', 'D' ];
+
+ensure.that(arr6)
+      .hasAtLeast(6)
+      .elements()
+      .byPushing(' ');
+
+console.log('TESTING PUSHING WITH AN ARGUMENT');
+console.log('arr6.length should be 6 \n', arr6.length === 6);
+console.log('arr6 should contain values  A,B,C,D, ,  \n', arr6.join() === 'A,B,C,D, , ');
